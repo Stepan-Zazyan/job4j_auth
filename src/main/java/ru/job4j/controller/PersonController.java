@@ -1,14 +1,20 @@
 package ru.job4j.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import ru.job4j.domain.ErrorBody;
 import ru.job4j.domain.Person;
+import ru.job4j.exception.PersonNotFoundException;
 import ru.job4j.service.impl.SimplePersonService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/person")
 @RequiredArgsConstructor
@@ -23,11 +29,9 @@ public class PersonController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Person> findById(@PathVariable int id) {
-        var person = personService.findById(id);
-        return new ResponseEntity<>(
-                person.orElse(new Person()),
-                person.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND
-        );
+        return ResponseEntity.ok(personService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Account is not found. PLease, check requisites")));
     }
 
     @PostMapping("/")
@@ -51,4 +55,17 @@ public class PersonController {
         personService.delete(person);
         return ResponseEntity.ok().build();
     }
+
+    @ExceptionHandler(value = {PersonNotFoundException.class})
+    public ResponseEntity<ErrorBody> handleNotValidStatusException(PersonNotFoundException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(400)
+                .body(ErrorBody.builder()
+                        .statusCode(400)
+                        .message("Person not exists")
+                        .details(e.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
 }
