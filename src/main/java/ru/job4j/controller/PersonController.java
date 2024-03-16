@@ -4,13 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.domain.ErrorBody;
 import ru.job4j.domain.Person;
+import ru.job4j.exception.Operation;
 import ru.job4j.exception.PersonNotFoundException;
 import ru.job4j.service.impl.SimplePersonService;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,7 +38,8 @@ public class PersonController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Person> save(@RequestBody Person person) {
+    @Validated(Operation.OnCreate.class)
+    public ResponseEntity<Person> save(@Valid @RequestBody Person person) {
         return new ResponseEntity<>(
                 personService.save(person),
                 HttpStatus.CREATED
@@ -43,7 +47,8 @@ public class PersonController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Void> update(@RequestBody Person person) {
+    @Validated(Operation.OnUpdate.class)
+    public ResponseEntity<Void> update(@Valid @RequestBody Person person) {
         personService.save(person);
         return ResponseEntity.ok().build();
     }
