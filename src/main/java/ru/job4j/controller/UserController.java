@@ -1,5 +1,7 @@
 package ru.job4j.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.domain.Person;
@@ -21,14 +23,15 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
-    public void signUp(@RequestBody Person person) {
+    public ResponseEntity<Void> signUp(@RequestBody Person person) {
         person.setPassword(encoder.encode(person.getPassword()));
         users.save(person);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/all")
-    public List<Person> findAll() {
-        return users.findAll();
+    public ResponseEntity<List<Person>> findAll() {
+        return new ResponseEntity<>(users.findAll(), HttpStatus.OK);
     }
 
 
