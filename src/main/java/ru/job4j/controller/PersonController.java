@@ -68,4 +68,10 @@ public class PersonController {
                         .build());
     }
 
+    @PatchMapping("/change-username")
+    public ResponseEntity<Person> changeUsername(@RequestBody Person person, String username) {
+        Person personToSave = personService.findById(person.getId()).get();
+        personToSave.setUsername(username);
+        return new ResponseEntity<>(personService.save(personToSave), HttpStatus.OK);
+    }
 }
