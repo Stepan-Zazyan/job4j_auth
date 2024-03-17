@@ -31,7 +31,7 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Person> findById(@PathVariable int id) {
+    public ResponseEntity<Person> findById(@PathVariable int id) throws PersonNotFoundException {
         return ResponseEntity.ok(personService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Account is not found. PLease, check requisites")));
@@ -74,7 +74,7 @@ public class PersonController {
     }
 
     @PatchMapping("/change-username")
-    public ResponseEntity<Person> changeUsername(@RequestBody Person person, String username) {
+    public ResponseEntity<Person> changeUsername(@Valid @RequestBody Person person, String username) throws PersonNotFoundException {
         Person personToSave = personService.findById(person.getId()).get();
         personToSave.setUsername(username);
         return new ResponseEntity<>(personService.save(personToSave), HttpStatus.OK);

@@ -3,6 +3,7 @@ package ru.job4j.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.job4j.domain.Person;
+import ru.job4j.exception.PersonNotFoundException;
 import ru.job4j.repository.PersonRepository;
 import ru.job4j.service.PersonService;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class SimplePersonService implements PersonService {
+public class SimplePersonService {
 
     private  final PersonRepository personRepository;
 
@@ -19,7 +20,7 @@ public class SimplePersonService implements PersonService {
        return personRepository.findAll();
     }
 
-    public Optional<Person> findById(int id) {
+    public Optional<Person> findById(int id) throws PersonNotFoundException {
         return personRepository.findById(id);
     }
 
