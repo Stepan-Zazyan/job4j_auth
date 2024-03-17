@@ -63,9 +63,9 @@ public class PersonController {
     }
 
     @PatchMapping("/change-username")
-    public ResponseEntity<Person> changeUsername(@Valid @RequestBody Person person, String username) throws PersonNotFoundException {
-        Person personToSave = personService.findById(person.getId()).get();
-        personToSave.setUsername(username);
+    public ResponseEntity<Person> changePassword(@Valid @RequestBody PersonDto personDto) throws PersonNotFoundException {
+        Person personToSave = personService.findByUsername(personDto.getUsername()).get();
+        personToSave.setPassword(personDto.getPassword());
         return new ResponseEntity<>(personService.save(personToSave), HttpStatus.OK);
     }
 

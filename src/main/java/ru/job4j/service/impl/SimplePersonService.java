@@ -36,4 +36,8 @@ public class SimplePersonService {
     public void delete(Person person) throws DataAccessException {
         personRepository.delete(person);
     }
+
+    public Optional<Person> findByUsername(String name) throws PersonNotFoundException {
+        return personRepository.findByUsername(name);
+    }
 }

@@ -3,7 +3,7 @@ package ru.job4j.mapper;
 import ru.job4j.domain.Person;
 import ru.job4j.dto.PersonDto;
 
-public class mapperPerson {
+public class MapperPerson {
 
     public PersonDto personToDto(Person person) {
         PersonDto personDto = new PersonDto();
