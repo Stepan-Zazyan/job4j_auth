@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.domain.ErrorBody;
 import ru.job4j.domain.Person;
+import ru.job4j.dto.PersonDto;
 import ru.job4j.exception.Operation;
 import ru.job4j.exception.PersonNotFoundException;
 import ru.job4j.service.impl.SimplePersonService;

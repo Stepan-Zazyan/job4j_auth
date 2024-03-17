@@ -1,6 +1,7 @@
 package ru.job4j.domain;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.UniqueElements;
 import ru.job4j.exception.Operation;
 
 import javax.persistence.Entity;
@@ -17,6 +18,7 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @NotBlank(message = "Username must be not empty")
+    @UniqueElements(message = "username must be unique")
     private String username;
     @NotBlank(message = "Password must be not empty", groups = {
             Operation.OnCreate.class, Operation.OnUpdate.class
