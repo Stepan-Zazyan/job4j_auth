@@ -61,6 +61,13 @@ public class PersonController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/change-username")
+    public ResponseEntity<Person> changeUsername(@Valid @RequestBody Person person, String username) throws PersonNotFoundException {
+        Person personToSave = personService.findById(person.getId()).get();
+        personToSave.setUsername(username);
+        return new ResponseEntity<>(personService.save(personToSave), HttpStatus.OK);
+    }
+
     @ExceptionHandler(value = {PersonNotFoundException.class})
     public ResponseEntity<ErrorBody> handleNotValidStatusException(PersonNotFoundException e) {
         log.error(e.getMessage());
@@ -71,12 +78,5 @@ public class PersonController {
                         .details(e.getMessage())
                         .timestamp(LocalDateTime.now())
                         .build());
-    }
-
-    @PatchMapping("/change-username")
-    public ResponseEntity<Person> changeUsername(@Valid @RequestBody Person person, String username) throws PersonNotFoundException {
-        Person personToSave = personService.findById(person.getId()).get();
-        personToSave.setUsername(username);
-        return new ResponseEntity<>(personService.save(personToSave), HttpStatus.OK);
     }
 }

@@ -1,6 +1,7 @@
 package ru.job4j.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import ru.job4j.domain.Person;
 import ru.job4j.exception.PersonNotFoundException;
@@ -28,11 +29,11 @@ public class SimplePersonService {
         return personRepository.save(person);
     }
 
-    public void update(Person person) {
+    public void update(Person person) throws DataAccessException {
        personRepository.save(person);
     }
 
-    public void delete(Person person) {
+    public void delete(Person person) throws DataAccessException {
         personRepository.delete(person);
     }
 }

@@ -1,5 +1,6 @@
 package ru.job4j.controller;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -34,6 +35,17 @@ public class PersonControllerAdvice {
                         ))
                         .collect(Collectors.toList())
         );
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<Object> handleDataAccessException(DataAccessException ex) {
+        return ResponseEntity.status(400)
+                .body(ErrorBody.builder()
+                        .statusCode(400)
+                        .message("Sorry, can not do this operation")
+                        .details(ex.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
     }
 
 }
