@@ -40,6 +40,12 @@ public class SimplePersonService {
         personRepository.delete(person);
     }
 
+    /**
+     *
+     * @param name String
+     * @return Person object
+     * @throws PersonNotFoundException custom
+     */
     public Person findByUsername(String name) throws PersonNotFoundException {
         Optional<Person> personOptional = personRepository.findByUsername(name);
         if (personOptional.isPresent()) {
@@ -47,6 +53,5 @@ public class SimplePersonService {
         }
         throw new PersonNotFoundException("Пользователя с таким логином не существует");
     }
-
 
 }
