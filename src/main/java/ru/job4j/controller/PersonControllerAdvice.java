@@ -6,6 +6,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.job4j.domain.ErrorBody;
+import ru.job4j.exception.PersonNotFoundException;
+import ru.job4j.exception.UsernameIsTakenException;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -35,6 +37,28 @@ public class PersonControllerAdvice {
                         ))
                         .collect(Collectors.toList())
         );
+    }
+
+    @ExceptionHandler({PersonNotFoundException.class})
+    public ResponseEntity<?> handleNPE(PersonNotFoundException exception) {
+        return ResponseEntity.status(400)
+                .body(ErrorBody.builder()
+                        .statusCode(400)
+                        .message("Person Not Found")
+                        .details(exception.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
+    @ExceptionHandler({UsernameIsTakenException.class})
+    public ResponseEntity<?> handleNPE(UsernameIsTakenException exception) {
+        return ResponseEntity.status(400)
+                .body(ErrorBody.builder()
+                        .statusCode(400)
+                        .message("Sorry, Username Is Taken")
+                        .details(exception.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
     }
 
     @ExceptionHandler(DataAccessException.class)

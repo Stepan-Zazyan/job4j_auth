@@ -12,6 +12,7 @@ import ru.job4j.domain.Person;
 import ru.job4j.dto.PersonDto;
 import ru.job4j.exception.Operation;
 import ru.job4j.exception.PersonNotFoundException;
+import ru.job4j.exception.UsernameIsTakenException;
 import ru.job4j.service.impl.SimplePersonService;
 
 import javax.validation.Valid;
@@ -40,7 +41,7 @@ public class PersonController {
 
     @PostMapping("/")
     @Validated(Operation.OnCreate.class)
-    public ResponseEntity<Person> save(@Valid @RequestBody Person person) {
+    public ResponseEntity<Person> save(@Valid @RequestBody Person person) throws UsernameIsTakenException {
         return new ResponseEntity<>(
                 personService.save(person),
                 HttpStatus.CREATED
@@ -49,7 +50,7 @@ public class PersonController {
 
     @PutMapping("/")
     @Validated(Operation.OnUpdate.class)
-    public ResponseEntity<Void> update(@Valid @RequestBody Person person) {
+    public ResponseEntity<Void> update(@Valid @RequestBody Person person) throws UsernameIsTakenException {
         personService.save(person);
         return ResponseEntity.ok().build();
     }
@@ -63,7 +64,7 @@ public class PersonController {
     }
 
     @PatchMapping("/change-username")
-    public ResponseEntity<Person> changePassword(@Valid @RequestBody PersonDto personDto) throws PersonNotFoundException {
+    public ResponseEntity<Person> changePassword(@Valid @RequestBody PersonDto personDto) throws PersonNotFoundException, UsernameIsTakenException {
         Person personToSave = personService.findByUsername(personDto.getUsername()).get();
         personToSave.setPassword(personDto.getPassword());
         return new ResponseEntity<>(personService.save(personToSave), HttpStatus.OK);
