@@ -65,7 +65,7 @@ public class PersonController {
 
     @PatchMapping("/change-username")
     public ResponseEntity<Person> changePassword(@Valid @RequestBody PersonDto personDto) throws PersonNotFoundException, UsernameIsTakenException {
-        Person personToSave = personService.findByUsername(personDto.getUsername()).get();
+        Person personToSave = personService.findByUsername(personDto.getUsername());
         personToSave.setPassword(personDto.getPassword());
         return new ResponseEntity<>(personService.save(personToSave), HttpStatus.OK);
     }
