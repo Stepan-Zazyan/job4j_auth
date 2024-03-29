@@ -14,10 +14,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SimplePersonService {
 
-    private  final PersonRepository personRepository;
+    private final PersonRepository personRepository;
 
     public List<Person> findAll() {
-       return personRepository.findAll();
+        return personRepository.findAll();
     }
 
     public Optional<Person> findById(int id) throws PersonNotFoundException {
@@ -29,7 +29,7 @@ public class SimplePersonService {
     }
 
     public void update(Person person) throws DataAccessException {
-       personRepository.save(person);
+        personRepository.save(person);
     }
 
     public void delete(Person person) throws DataAccessException {
@@ -37,17 +37,16 @@ public class SimplePersonService {
     }
 
     /**
-     *
      * @param name String
      * @return Person object
      * @throws PersonNotFoundException custom
      */
-    public Person findByUsername(String name) throws PersonNotFoundException {
-        Optional<Person> personOptional = personRepository.findByUsername(name);
-        if (personOptional.isPresent()) {
-            return personOptional.get();
+    public Optional<Person> findByUsername(String name) throws PersonNotFoundException {
+        Optional<Person> person = personRepository.findByUsername(name);
+        if (person.isEmpty()) {
+            throw new PersonNotFoundException("Пользователя с таким логином не существует");
         }
-        throw new PersonNotFoundException("Пользователя с таким логином не существует");
+        return personRepository.findByUsername(name);
     }
 
 }

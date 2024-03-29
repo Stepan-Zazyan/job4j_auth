@@ -72,20 +72,26 @@ public class PersonController {
 
     @PatchMapping("/change-username")
     public ResponseEntity<Person> changePassword(@Valid @RequestBody PersonDto personDto) throws PersonNotFoundException, UsernameIsTakenException {
-        Person personToSave = personService.findByUsername(personDto.getUsername());
-        personToSave.setPassword(personDto.getPassword());
-        if (personService.save(personToSave).isEmpty()) {
+        Optional<Person> personOptional = personService.findByUsername(personDto.getUsername());
+        if ((personOptional).isEmpty()) {
+            throw new PersonNotFoundException("");
+        }
+        Person person = personOptional.get();
+        person.setPassword(personDto.getPassword());
+        Optional<Person> personToSaveOptional = personService.save(person);
+        if ((personToSaveOptional).isEmpty()) {
             throw new UsernameIsTakenException("");
         }
-        return new ResponseEntity<>(personService.save(personToSave).get(), HttpStatus.OK);
+        Person personToSave = personToSaveOptional.get();
+        return new ResponseEntity<>(personToSave, HttpStatus.OK);
     }
 
     @ExceptionHandler(value = {PersonNotFoundException.class})
     public ResponseEntity<ErrorBody> handleNotValidStatusException(PersonNotFoundException e) {
         log.error(e.getMessage());
-        return ResponseEntity.status(400)
+        return ResponseEntity.status(404)
                 .body(ErrorBody.builder()
-                        .statusCode(400)
+                        .statusCode(404)
                         .message("Person not exists")
                         .details(e.getMessage())
                         .timestamp(LocalDateTime.now())
