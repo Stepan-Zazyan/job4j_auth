@@ -25,7 +25,7 @@ public class SimplePersonService {
     }
 
     public Optional<Person> save(Person person) {
-        return personRepository.create(person);
+        return Optional.ofNullable(person);
     }
 
     public void update(Person person) throws DataAccessException {
