@@ -5,7 +5,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import ru.job4j.domain.Person;
 import ru.job4j.exception.PersonNotFoundException;
-import ru.job4j.exception.UsernameIsTakenException;
 import ru.job4j.repository.PersonRepository;
 
 import java.util.List;
@@ -25,11 +24,8 @@ public class SimplePersonService {
         return personRepository.findById(id);
     }
 
-    public Person save(Person person) throws UsernameIsTakenException {
-        if (personRepository.existsByUsername(person.getUsername())) {
-            throw new UsernameIsTakenException("Пользователя с таким логином уже существует");
-        }
-        return personRepository.save(person);
+    public Optional<Person> save(Person person) {
+        return personRepository.create(person);
     }
 
     public void update(Person person) throws DataAccessException {

@@ -41,9 +41,9 @@ public class PersonControllerAdvice {
 
     @ExceptionHandler({PersonNotFoundException.class})
     public ResponseEntity<?> handleNPE(PersonNotFoundException exception) {
-        return ResponseEntity.status(400)
+        return ResponseEntity.status(404)
                 .body(ErrorBody.builder()
-                        .statusCode(400)
+                        .statusCode(404)
                         .message("Person Not Found")
                         .details(exception.getMessage())
                         .timestamp(LocalDateTime.now())
@@ -52,9 +52,9 @@ public class PersonControllerAdvice {
 
     @ExceptionHandler({UsernameIsTakenException.class})
     public ResponseEntity<?> handleNPE(UsernameIsTakenException exception) {
-        return ResponseEntity.status(400)
+        return ResponseEntity.status(404)
                 .body(ErrorBody.builder()
-                        .statusCode(400)
+                        .statusCode(404)
                         .message("Sorry, Username Is Taken")
                         .details(exception.getMessage())
                         .timestamp(LocalDateTime.now())

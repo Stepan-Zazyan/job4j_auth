@@ -18,6 +18,7 @@ import ru.job4j.service.impl.SimplePersonService;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -42,8 +43,11 @@ public class PersonController {
     @PostMapping("/")
     @Validated(Operation.OnCreate.class)
     public ResponseEntity<Person> save(@Valid @RequestBody Person person) throws UsernameIsTakenException {
+        if (personService.save(person).isEmpty()) {
+            throw new UsernameIsTakenException("");
+        }
         return new ResponseEntity<>(
-                personService.save(person),
+                personService.save(person).get(),
                 HttpStatus.CREATED
         );
     }
@@ -51,7 +55,10 @@ public class PersonController {
     @PutMapping("/")
     @Validated(Operation.OnUpdate.class)
     public ResponseEntity<Void> update(@Valid @RequestBody Person person) throws UsernameIsTakenException {
-        personService.save(person);
+        Optional<Person> personOptional = personService.save(person);
+        if (personOptional.isEmpty()) {
+            throw new UsernameIsTakenException("");
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -67,7 +74,10 @@ public class PersonController {
     public ResponseEntity<Person> changePassword(@Valid @RequestBody PersonDto personDto) throws PersonNotFoundException, UsernameIsTakenException {
         Person personToSave = personService.findByUsername(personDto.getUsername());
         personToSave.setPassword(personDto.getPassword());
-        return new ResponseEntity<>(personService.save(personToSave), HttpStatus.OK);
+        if (personService.save(personToSave).isEmpty()) {
+            throw new UsernameIsTakenException("");
+        }
+        return new ResponseEntity<>(personService.save(personToSave).get(), HttpStatus.OK);
     }
 
     @ExceptionHandler(value = {PersonNotFoundException.class})
