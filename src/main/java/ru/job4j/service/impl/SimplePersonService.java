@@ -1,6 +1,7 @@
 package ru.job4j.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import ru.job4j.domain.Person;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SimplePersonService {
 
     private final PersonRepository personRepository;
@@ -25,7 +27,13 @@ public class SimplePersonService {
     }
 
     public Optional<Person> save(Person person) {
-        return Optional.ofNullable(person);
+        try {
+            personRepository.save(person);
+            return Optional.of(person);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return Optional.empty();
     }
 
     public void update(Person person) throws DataAccessException {

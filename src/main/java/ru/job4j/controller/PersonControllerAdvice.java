@@ -1,6 +1,7 @@
 package ru.job4j.controller;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -40,10 +41,10 @@ public class PersonControllerAdvice {
     }
 
     @ExceptionHandler({PersonNotFoundException.class})
-    public ResponseEntity<?> handleNPE(PersonNotFoundException exception) {
-        return ResponseEntity.status(404)
+    public ResponseEntity<?> handlePersonNotFoundException(PersonNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ErrorBody.builder()
-                        .statusCode(404)
+                        .statusCode(409)
                         .message("Person Not Found")
                         .details(exception.getMessage())
                         .timestamp(LocalDateTime.now())
@@ -52,9 +53,9 @@ public class PersonControllerAdvice {
 
     @ExceptionHandler({UsernameIsTakenException.class})
     public ResponseEntity<?> handleNPE(UsernameIsTakenException exception) {
-        return ResponseEntity.status(404)
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ErrorBody.builder()
-                        .statusCode(404)
+                        .statusCode(409)
                         .message("Sorry, Username Is Taken")
                         .details(exception.getMessage())
                         .timestamp(LocalDateTime.now())
