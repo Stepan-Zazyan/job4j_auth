@@ -1,9 +1,10 @@
 package ru.job4j.controller;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,10 +24,12 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping("/person")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class PersonController {
 
     private final SimplePersonService personService;
+
+    private BCryptPasswordEncoder encoder;
 
     @GetMapping("/")
     public List<Person> findAll() {
@@ -77,7 +80,7 @@ public class PersonController {
             throw new PersonNotFoundException("");
         }
         Person person = personOptional.get();
-        person.setPassword(personDto.getPassword());
+        person.setPassword(encoder.encode(personDto.getPassword()));
         Optional<Person> personToSaveOptional = personService.save(person);
         if ((personToSaveOptional).isEmpty()) {
             throw new UsernameIsTakenException("");

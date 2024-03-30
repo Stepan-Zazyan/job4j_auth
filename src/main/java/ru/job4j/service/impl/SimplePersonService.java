@@ -3,6 +3,10 @@ package ru.job4j.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.job4j.domain.Person;
 import ru.job4j.exception.PersonNotFoundException;
@@ -11,10 +15,12 @@ import ru.job4j.repository.PersonRepository;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.emptyList;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class SimplePersonService {
+public class SimplePersonService  implements UserDetailsService {
 
     private final PersonRepository personRepository;
 
@@ -57,4 +63,13 @@ public class SimplePersonService {
         return personRepository.findByUsername(name);
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<Person> person = personRepository.findByUsername(username);
+        if (person.isEmpty()) {
+            throw new UsernameNotFoundException(username);
+        }
+        Person user = person.get();
+        return new User(user.getUsername(), user.getPassword(), emptyList());
+    }
 }
