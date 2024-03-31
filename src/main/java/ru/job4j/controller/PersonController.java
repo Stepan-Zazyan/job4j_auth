@@ -46,11 +46,13 @@ public class PersonController {
     @PostMapping("/")
     @Validated(Operation.OnCreate.class)
     public ResponseEntity<Person> save(@Valid @RequestBody Person person) throws UsernameIsTakenException {
-        if (personService.save(person).isEmpty()) {
+        person.setPassword(encoder.encode(person.getPassword()));
+        Optional<Person> personOptional = personService.save(person);
+        if (personOptional.isEmpty()) {
             throw new UsernameIsTakenException("");
         }
         return new ResponseEntity<>(
-                personService.save(person).get(),
+                personOptional.get(),
                 HttpStatus.CREATED
         );
     }
@@ -58,8 +60,8 @@ public class PersonController {
     @PutMapping("/")
     @Validated(Operation.OnUpdate.class)
     public ResponseEntity<Void> update(@Valid @RequestBody Person person) throws UsernameIsTakenException {
-        Optional<Person> personOptional = personService.save(person);
-        if (personOptional.isEmpty()) {
+        person.setPassword(encoder.encode(person.getPassword()));
+        if (personService.save(person).isEmpty()) {
             throw new UsernameIsTakenException("");
         }
         return ResponseEntity.ok().build();
